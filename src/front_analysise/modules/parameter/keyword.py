@@ -34,7 +34,7 @@ class Keyword(BaseParameter):
     def filter(name):
         # str = str.strip()
 
-        # 判断其他字符
+        # judge other characters
         if name.startswith("_"):
             return False, ""
 

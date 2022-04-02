@@ -26,9 +26,9 @@ class AnalysisBinary(object):
 
     def __init__(self, binaryfile):
         """
-        具体的二进制程序分析模块
-        :param binaryfile: 二进制文件路径
-        :param commands -> set(): 用于比较的二进制命令
+        Specific binary program analysis module
+        :param binaryfile: binary file path
+        :param commands -> set(): binary command for comparison
         """
         self.binaryfile = binaryfile
         self.log = get_logger()
@@ -56,8 +56,8 @@ class AnalysisBinary(object):
     @staticmethod
     def check_lsb_or_msb(programpath):
         """
-        判断程序是大端序还是小端序
-        :param programpath: 二进制程序路径
+        Determine if the program is big endian or little endian
+        :param programpath: binary program path
         :return:
         """
         command_result = execute(programpath)
@@ -71,7 +71,7 @@ class AnalysisBinary(object):
     @staticmethod
     def la_sm_swap(text_x16):
         """
-        大端序与小端序相互转换
+        Convert big endian to little endian
         Args:
             text_x16: 16进制数据
 
@@ -83,7 +83,7 @@ class AnalysisBinary(object):
     @staticmethod
     def str_to_hex(text):
         """
-        将字符串转为16进制
+        convert string to hexadecimal
         Args:
             text: 字符串
             binary_x16
@@ -94,7 +94,7 @@ class AnalysisBinary(object):
 
     @staticmethod
     def hex_to_str(str_hex):
-        "16进制转字符串"
+        "hexadecimal to string"
         "aa bb cc dd"
         rule = re.compile('.{2}')
         str = ' '.join(rule.findall(str_hex))
@@ -103,7 +103,7 @@ class AnalysisBinary(object):
     def find_keywords(self, keywords):
         result = set()
         for keyword in keywords:
-            # 遍历commands中的全部可执行命令
+            # Traverse all executable commands
             self.log.debug("[-] Analyzing {} : {}".format(self.binaryfile, keyword.name))
             # check_path = True if "/" in keyword else False
 
@@ -156,7 +156,7 @@ class AnalysisBinary(object):
     def find_function(self, functions):
         result = set()
         for func in functions:
-            # 遍历commands中的全部可执行命令
+            # Traverse all executable commands
             res = False
             self.log.debug("[-] Analyzing {} : {}".format(self.binaryfile, func.name))
             # check_path = True if "/" in keyword else False

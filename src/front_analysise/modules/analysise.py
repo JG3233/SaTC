@@ -22,9 +22,9 @@ class _BaseAnalysise():
         self.traver = TraverFile(firmware_dir)
         self.analysise_obj = []
 
-        # 用于记录JS文件引用{“文件名”:"JSFile对象"}
+        # For logging JS file references {"filename":"JSFileobject"}
         self.jsfile_citations = {}
-        # 用于记录被删除（没有被分析）的文件
+        # Used to record deleted (not analyzed) files
         self.remove_file = set()
 
         self.log = get_logger()
@@ -41,7 +41,7 @@ class FrontAnalysise(_BaseAnalysise):
     # TODO
     #  self.jsfile_citations = {}
     #  self.remove_file = set(）
-    #  不应该出现在方法内部，这个逻辑需要重新写，整理代码
+    #  It should not appear inside the method, this logic needs to be rewritten to clean up the code
     def analysise(self, ANALYSIZER):
 
         for suffix, parser in ANALYSIZER.items():

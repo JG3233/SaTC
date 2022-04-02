@@ -45,7 +45,7 @@ def argsparse():
     parser.add_argument("-d", "--directory", required=True, metavar="/root/path/_ac18.extracted",
                         help="Directory of the file system after firmware decompression")
 
-    # 添加默认输出路径，后续设置docker映射后设置
+    # Add the default output path, and then set it after setting the docker mapping
     parser.add_argument("-o", "--output", required=True, metavar="/root/output",
                         help="Folder for output results ")
     # execute ghidra ： command
@@ -60,14 +60,14 @@ def argsparse():
     parser.add_argument("--save_ghidra_project", required=False, action="store_true",
                         help="whether to save the ghidra project")
 
-    # 是否启用污点分析，默认不启用
+    # Whether to enable taint analysis, not enabled by default
     parser.add_argument("--taint_check", required=False, action="store_true", default=False,
                         help="Enable taint analysis")
 
-    # 添加指定前几个为边界程序，与 --bin互斥
+    # Add the specified first few as boundary programs, mutually exclusive with --bin
 
     # Other command
-    # 添加指定边界程序的方法
+    # Add a method to specify the boundary procedure
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-b", "--bin", required=False, action="append", metavar="/var/ac18/bin/httpd",
                        help="Input border bin")
@@ -112,7 +112,7 @@ def front_analysise(args):
     f_res = f_analysise.get_analysise_result()
     f_remove_file = f_analysise.get_remove_file()
 
-    # 处理UPNP协议
+    # Handling the UPNP protocol
     upapanalysise = set()
     if UPNP_ANALYSISE:
         upnpanaly = UpnpAnalysise(args.directory)
@@ -137,7 +137,7 @@ def front_analysise(args):
     b_analysise.analysise()
     names = b_analysise.getbinname_and_path()
 
-    # 开始从结果中过滤
+    # start filtering from results
     for _F in B_FILTERS:
         f = _F()
         f()
@@ -147,20 +147,20 @@ def front_analysise(args):
         remove_keyword_collection = list(set(remove_keyword + remove_keyword_collection))
         remove_function_collection = list(set(remove_func + remove_function_collection))
 
-        # 从b_analysise.elf_result里面删除上述结果
+        # Delete the above result from b_analysise.elf_result
         b_analysise.delete_function(remove_func)
         b_analysise.delete_keyword(remove_keyword)
 
-    # 处理部分匹配
+    # Handling partial matches
     api_match_results = set()
     if API_SPLIT_MARCH:
         api_match_results = b_analysise.api_march()
 
     runtimer.set_end_time()
-    # 获取结果
+    # get results
     res = b_analysise.get_result()
 
-    # 整理bin
+    # organize bins
     border_bin = []
     if not args.bin:
         for bin in res[:args.len]:
@@ -171,11 +171,11 @@ def front_analysise(args):
         for f_name, f_path in names:
             border_bin.append((f_name, f_path))
 
-    # TODO 写结果  args.output可以加上随机路径
+    # TODO Write the result args.output can add a random path
     o = Output(res, front_result_output)
     o.custom_write()
 
-    # 可选项
+    # optional
     o.write_file_info(f_res)
     o.write_remove_info(remove_function_collection, remove_keyword_collection)
 
@@ -208,7 +208,7 @@ def ghidra_analysise(args, border_bin):
 
     ghidra_project = os.path.join(ghidra_result_output, "ghidra_project")
 
-    # 判断ghidra_project目录是否存在，如果不存在则创建
+    # Determine whether the ghidra_project directory exists, and create it if it does not exist
     if not os.path.isdir(ghidra_project):
         os.makedirs(ghidra_project)
 
@@ -233,7 +233,7 @@ def ghidra_analysise(args, border_bin):
             if not os.path.isdir(bin_ghidra_project):
                 os.makedirs(bin_ghidra_project)
 
-            # 复制分析到binpath到bin_ghidra_project目录
+            # Copy analysis to binpath to bin_ghidra_project directory
             print("copy {} to {}".format(binname, bin_ghidra_project))
             shutil.copy2(binpath, bin_ghidra_project)
 
@@ -254,7 +254,7 @@ def ghidra_analysise(args, border_bin):
             p = subprocess.Popen(ghidra_args)
             p.wait()
 
-    # 移除GHIdra Project目录和rep目录
+    # Remove Ghidra Project directory and rep directory
     if not args.save_ghidra_project:
         shutil.rmtree(ghidra_project)
 
@@ -278,7 +278,7 @@ def main():
 
 
     if args.ghidra_script and args.taint_check:
-        # 启用污点分析
+        # Enable taint analysis
         from taint_check.main import taint_stain_analysis
         from taint_check.bug_finder.config import checkcommandinjection, checkbufferoverflow
 
@@ -297,7 +297,7 @@ def main():
                         checkbufferoverflow = False
                         checkcommandinjection = True
 
-                    # TODO 更改结果文件的保存位置
+                    # TODO Change where the result file is saved
                     taint_stain_analysis(bin_path, ghidra_result, args.output)
 
         log.info("End taint check ...")
